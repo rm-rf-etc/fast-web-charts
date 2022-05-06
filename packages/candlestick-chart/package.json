@@ -1,0 +1,9 @@
+{
+  "name": "candlestick-chart",
+  "version": "1.0.0",
+  "main": "index.js",
+  "types": "dist/index.d.ts",
+  "author": "rm.rf.etc@gmail.com",
+  "license": "MIT",
+  "private": true
+}
