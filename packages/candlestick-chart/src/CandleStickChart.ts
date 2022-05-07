@@ -186,7 +186,6 @@ export class CandleStickChart {
     S.layersMap.bodiesG.lineWidth = S.xUnit * 0.8;
     S.layersMap.bodiesR.lineWidth = S.xUnit * 0.8;
 
-    console.log(this.controls.autoScale, S.minY, S.maxY);
     if (this.controls.autoScale || S.minY === Infinity || S.maxY === -Infinity) {
       let minY = Infinity;
       let maxY = -Infinity;

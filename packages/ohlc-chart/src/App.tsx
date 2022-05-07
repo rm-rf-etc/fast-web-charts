@@ -1,17 +1,20 @@
 import './App.css';
-import React from 'react';
-import { EzSurfaceReact, EzSurface } from 'ez-surface';
+import { EzSurfaceReact } from 'ez-surface';
 import { candleStickChart } from './candleStickChart';
 
-export const App = () => {
-  const onReady = React.useCallback((s: EzSurface) => {
-    const csc = candleStickChart(s);
-    // console.log('on ready', s);
-  }, []);
+const style: React.HTMLAttributes<HTMLDivElement>['style'] = {
+  position: 'absolute',
+  height: '60%',
+  width: '100%',
+  top: '50%',
+  left: '0',
+  transform: 'translateY(-50%)',
+};
 
+export const App = () => {
   return (
-    <div className="App">
-      <EzSurfaceReact onReady={onReady} />
+    <div style={style}>
+      <EzSurfaceReact onReady={candleStickChart} />
     </div>
   );
 }

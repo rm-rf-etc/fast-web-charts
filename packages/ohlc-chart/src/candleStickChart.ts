@@ -26,6 +26,7 @@ export function candleStickChart(surface: EzSurface) {
       controls: {
         autoScale: true,
         zoomEnabled: true,
+        scrollEnabled: true,
       },
       onViewChanged(minX: number, maxX: number, minY: number, maxY: number, zoomY: number) {
         // ws.push("push-view-changes", { minX, maxX, minY, maxY, zoomY });
@@ -55,9 +56,7 @@ export function candleStickChart(surface: EzSurface) {
         }
       }
     },
-  }).forEach(([ev, fn]) => {
-    window.addEventListener(ev, fn);
-  });
+  }).forEach(([ev, fn]) => window.addEventListener(ev, fn));
 
   chart.onready();
 

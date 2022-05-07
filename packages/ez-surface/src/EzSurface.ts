@@ -10,6 +10,11 @@ export interface LayersMap {
   [k: string]: RenderLayer;
 }
 
+export type ChangeProps = Partial<{
+  width: number;
+  height: number;
+}>
+
 class EzSurface {
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
@@ -32,10 +37,37 @@ class EzSurface {
   get yZoomUnit() { return (this.canvas.height - this.zoomY) / -this.rangeY }
   get yZoomMargin() { return this.zoomY / this.yZoomUnit }
 
-  constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
-    this.canvas = canvas;
+  constructor(canvas: HTMLCanvasElement, parent: HTMLElement, alpha: boolean) {
+    const context = canvas.getContext('2d', { alpha });
+    if (!context) {
+      throw new Error('Failed to create 2D context for canvas');
+    }
     this.context = context;
-    context.scale(devicePixelRatio, devicePixelRatio);
+    this.canvas = canvas;
+    this.context.scale(devicePixelRatio, devicePixelRatio);
+
+    this.update({
+      width: parent.offsetWidth * devicePixelRatio,
+      height: parent.offsetHeight * devicePixelRatio,
+    });
+
+    const self = this;
+    window.addEventListener('resize', () => {
+      self.update({
+        width: parent.offsetWidth * devicePixelRatio,
+        height: parent.offsetHeight * devicePixelRatio,
+      });
+    });
+  }
+
+  update(changeProps: ChangeProps) {
+    if (changeProps.width) {
+      this.canvas.width = changeProps.width;
+    }
+    if (changeProps.height) {
+      this.canvas.height = changeProps.height;
+    }
+    this.renderLayers();
   }
 
   config(opts: ConfigOptions) {
@@ -59,14 +91,14 @@ class EzSurface {
   }
 
   setMinMaxX(minX: number, maxX: number) {
-    console.log('setMinMaxX', minX, maxX);
+    // console.log('setMinMaxX', minX, maxX);
     this.minX = minX;
     this.maxX = maxX;
     this.rangeX = this.maxX - this.minX;
   }
 
   setMinMaxY(minY: number, maxY: number) {
-    console.log('setMinMaxY', minY, maxY);
+    // console.log('setMinMaxY', minY, maxY);
     this.minY = minY;
     this.maxY = maxY;
     this.rangeY = this.maxY - this.minY;
@@ -103,21 +135,21 @@ class EzSurface {
   }
 
   renderLayers(clear = true) {
-    if (this.rangeY === -Infinity || this.rangeY === Infinity) return;
-    if (clear) this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    requestAnimationFrame(() => {
+      if (this.rangeY === -Infinity || this.rangeY === Infinity) return;
+      if (clear) this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    const viewTransforms = this.getViewMatrix();
+      const viewTransforms = this.getViewMatrix();
 
-    if (!viewTransforms) {
-      return this;
-    }
+      if (!viewTransforms) {
+        return this;
+      }
 
-    for (const layer of this.layersList) {
-      if (!layer.isVisible) continue;
-      this.paintLayer(layer, viewTransforms);
-    }
-
-    return this;
+      for (const layer of this.layersList) {
+        if (!layer.isVisible) continue;
+        this.paintLayer(layer, viewTransforms);
+      }
+    });
   }
 
   paintLayer(layer: RenderLayer, matrix: DOMMatrix) {
