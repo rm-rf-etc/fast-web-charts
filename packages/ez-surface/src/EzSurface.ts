@@ -35,6 +35,7 @@ class EzSurface {
   constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
     this.canvas = canvas;
     this.context = context;
+    context.scale(devicePixelRatio, devicePixelRatio);
   }
 
   config(opts: ConfigOptions) {
@@ -51,37 +52,21 @@ class EzSurface {
     }
     if (opts.events) {
       Object.entries(opts.events).forEach(([name, handler]) => {
+        console.log(`setup event handler: ${name}`);
         this.canvas.addEventListener(name, handler);
       });
     }
   }
 
-  connectedCallback() {
-    this.canvas.width = this.canvas.offsetWidth * devicePixelRatio;
-    this.canvas.height = this.canvas.offsetHeight * devicePixelRatio;
-    this.name = this.canvas.getAttribute("name");
-    if (!this.name) throw "killer-canvas requires a name attribute";
-
-    window.addEventListener("resize", () => {
-      this.canvas.width = this.canvas.offsetWidth * devicePixelRatio;
-      this.canvas.height = this.canvas.offsetHeight * devicePixelRatio;
-      this.render();
-    });
-
-    // window.canvasComponents = window.canvasComponents || {};
-    // window.canvasComponents[this.name] = this;
-    window.dispatchEvent(new CustomEvent("canvas-ready", {
-      detail: { surface: this, name: this.name },
-    }));
-  }
-
   setMinMaxX(minX: number, maxX: number) {
+    console.log('setMinMaxX', minX, maxX);
     this.minX = minX;
     this.maxX = maxX;
     this.rangeX = this.maxX - this.minX;
   }
 
   setMinMaxY(minY: number, maxY: number) {
+    console.log('setMinMaxY', minY, maxY);
     this.minY = minY;
     this.maxY = maxY;
     this.rangeY = this.maxY - this.minY;
@@ -136,13 +121,12 @@ class EzSurface {
   }
 
   paintLayer(layer: RenderLayer, matrix: DOMMatrix) {
-    layer._path = new Path2D();
-    layer._path.addPath(layer._path, matrix);
+    const path = layer.renderPath(matrix);
     if (layer.fillStyle) this.context.fillStyle = layer.fillStyle;
     if (layer.lineWidth) this.context.lineWidth = layer.lineWidth;
     if (layer.strokeStyle) this.context.strokeStyle = layer.strokeStyle;
     if (layer.blendMode) this.context.globalCompositeOperation = layer.blendMode;
-    this.context.stroke(layer._path);
+    this.context.stroke(path);
   }
 
   render() {

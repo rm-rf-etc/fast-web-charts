@@ -4,7 +4,7 @@ import Curve from './Curve';
 type Point = [number, number];
 
 export class RenderLayer {
-  _path = new Path2D();
+  _path: Path2D;
   label: string | null = null;
   strokeStyle: string | null = null;
   isVisible: boolean = true;
@@ -19,11 +19,21 @@ export class RenderLayer {
     fillStyle?: string,
     blendMode?: GlobalCompositeOperation
   ) {
+    this._path = new Path2D();
     this.strokeStyle = strokeStyle || null;
     this.fillStyle = fillStyle || null;
     this.lineWidth = lineWidth || null;
     this.blendMode = blendMode || null;
     this.label = label;
+  }
+
+  renderPath(matrix?: DOMMatrix) {
+    if (matrix) {
+      const newPath = new Path2D();
+      newPath.addPath(this._path, matrix);
+      return newPath;
+    }
+    return this._path;
   }
 
   newCurve() {

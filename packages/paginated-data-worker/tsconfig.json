@@ -7,8 +7,5 @@
     "composite": true,
     "outDir": "dist",
     "rootDir": "src"
-  },
-  "references": [
-    {"path": "../ez-surface"}
-  ]
+  }
 }

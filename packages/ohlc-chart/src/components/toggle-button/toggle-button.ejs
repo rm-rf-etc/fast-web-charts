@@ -1,0 +1,31 @@
+<style>
+  :host {
+    display: block;
+    width: 100%;
+    padding: 5px 5px 0px 5px;
+    box-sizing: border-box;
+  }
+  button {
+    position: relative;
+    width: 100%;
+    padding: 5px 24px 5px 10px;
+    text-align: left;
+    color: var(--text-primary);
+    background-color: var(--black1);
+    border: 1px solid var(--black4);
+    border-radius: 3px;
+  }
+  input {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    display: inline-block;
+    pointer-events: none;
+    margin: 0;
+    transform: translateY(10%);
+  }
+</style>
+<button>
+  <input type="checkbox"></input>
+  <slot></slot>
+</button>

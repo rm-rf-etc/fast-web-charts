@@ -1,5 +1,5 @@
 import { EzSurface, RenderLayer } from 'ez-surface';
-import PaginatedTimeSeries from './PaginatedDataContainer';
+import { PaginatedTimeSeries } from 'paginated-data-client';
 
 interface CandleStickChartConfig {
   bearish?: string;
@@ -7,17 +7,22 @@ interface CandleStickChartConfig {
   line1?: string;
   line2?: string;
   onViewChanged?: CallableFunction;
-}
-
-interface OnReadyEvent {
-  detail: { surface: EzSurface };
+  workerUrl?: string | null;
+  controls?: {
+    keyboardMeta?: boolean,
+    keyboardShift?: boolean,
+    keyboardControl?: boolean,
+    scrollEnabled?: boolean,
+    zoomEnabled?: boolean,
+    autoScale?: boolean,
+  }
 }
 
 export class CandleStickChart {
   data: any[] = [];
   surface: EzSurface | null = null;
   onViewChanged: CallableFunction | null = null;
-  workerUrl: string;
+  workerUrl: string | null;
   controls = {
     keyboardMeta: false,
     keyboardShift: false,
@@ -30,9 +35,9 @@ export class CandleStickChart {
   lastX: number;
   timeseries: PaginatedTimeSeries | null = null;
 
-  constructor(canvas: EzSurface, workerUrl: string, data: any[], conf: CandleStickChartConfig = {}) {
+  constructor(canvas: EzSurface, data: any[], conf: CandleStickChartConfig = {}) {
     this.surface = canvas;
-    this.workerUrl = workerUrl;
+    this.workerUrl = conf.workerUrl || null;
     this.data = data;
     this.colors.bearish = conf.bearish || "rgb(232,59,63)";
     this.colors.bullish = conf.bullish || "rgb(36,152,136)";
@@ -40,22 +45,24 @@ export class CandleStickChart {
     this.colors.line2 = conf.line2 || "rgb(254,233,58)";
     this.onViewChanged = conf.onViewChanged || null;
     this.lastX = data.at(-1).x;
+    if (conf.controls) {
+      this.controls = Object.assign(this.controls, conf.controls);
+    }
   }
 
-  onready({ detail: { surface: S } }: OnReadyEvent) {
-    console.log('onready');
-    this.surface = S;
+  onready() {
+    const S = this.surface;
     S.zoomY = 0;
     S.setMinMaxX(this.data.at(-101).x, this.data.at(-1).x + 1);
     S.setMinMaxY(Infinity, -Infinity);
 
-    this.timeseries = new PaginatedTimeSeries(
-      this.workerUrl,
-      this.data.map(c => c.x),
-      this.data,
-      this.data.at(0).x,
-      this.data.at(-1).x,
-    );
+    // this.timeseries = new PaginatedTimeSeries(
+    //   this.workerUrl,
+    //   this.data.map(c => c.x),
+    //   this.data,
+    //   this.data.at(0).x,
+    //   this.data.at(-1).x,
+    // );
 
     const bodiesLayerG = new RenderLayer("bodiesG", 3, this.colors.bullish);
     const bodiesLayerR = new RenderLayer("bodiesR", 3, this.colors.bearish);
@@ -66,19 +73,30 @@ export class CandleStickChart {
     const curve20 = sma20Layer.newCurve();
     const curve40 = sma40Layer.newCurve();
 
-    this.timeseries.onready = () => {
-      this.timeseries.forEach(({ x, o, c, h, l, sma20, sma40 }) => {
-        if (c > o) {
-          wicksLayerG.newLine([x, l], [x, h]);
-          bodiesLayerG.newLine([x, o], [x, c]);
-        } else {
-          wicksLayerR.newLine([x, l], [x, h]);
-          bodiesLayerR.newLine([x, o], [x, c]);
-        }
-        curve20.addPoint(x, sma20);
-        curve40.addPoint(x, sma40);
-      });
-    };
+    // this.timeseries.onready = () => {
+    //   this.timeseries.forEach(({ x, o, c, h, l, sma20, sma40 }) => {
+    //     if (c > o) {
+    //       wicksLayerG.newLine([x, l], [x, h]);
+    //       bodiesLayerG.newLine([x, o], [x, c]);
+    //     } else {
+    //       wicksLayerR.newLine([x, l], [x, h]);
+    //       bodiesLayerR.newLine([x, o], [x, c]);
+    //     }
+    //     curve20.addPoint(x, sma20);
+    //     curve40.addPoint(x, sma40);
+    //   });
+    // };
+    this.data.forEach(({ x, o, c, h, l, sma20, sma40 }) => {
+      if (c > o) {
+        wicksLayerG.newLine([x, l], [x, h]);
+        bodiesLayerG.newLine([x, o], [x, c]);
+      } else {
+        wicksLayerR.newLine([x, l], [x, h]);
+        bodiesLayerR.newLine([x, o], [x, c]);
+      }
+      curve20.addPoint(x, sma20);
+      curve40.addPoint(x, sma40);
+    });
 
     Object.defineProperty(bodiesLayerG, "isVisible", {
       get: () => S.layersMap.bodiesG.lineWidth > 2,
@@ -98,10 +116,12 @@ export class CandleStickChart {
       events: { mousewheel: evt => this.handleMouseWheelEvent(evt) },
     });
 
-    S.startAnimationLoop();
+    this.render();
+    // S.startAnimationLoop();
   }
 
-  handleMouseWheelEvent(evt) {
+  handleMouseWheelEvent(evt: Event) {
+    if (!(evt instanceof WheelEvent)) return;
     evt.preventDefault();
 
     const S = this.surface;
@@ -113,6 +133,7 @@ export class CandleStickChart {
       if (this.onViewChanged) {
         this.onViewChanged(S.minX, S.maxX, S.minY, S.maxY, S.zoomY);
       }
+      this.render();
       return;
     }
 
@@ -123,6 +144,7 @@ export class CandleStickChart {
       if (this.onViewChanged) {
         this.onViewChanged(newMinX, newMaxX, S.minY, S.maxY, S.zoomY);
       }
+      this.render();
       return;
     }
 
@@ -139,6 +161,7 @@ export class CandleStickChart {
       if (this.onViewChanged) {
         this.onViewChanged(newMinX, newMaxX, S.minY, S.maxY, S.zoomY);
       }
+      this.render();
       return;
     }
 
@@ -154,6 +177,8 @@ export class CandleStickChart {
     if (this.onViewChanged) {
       this.onViewChanged(newMinX, newMaxX, S.minY, S.maxY, S.zoomY);
     }
+
+    this.render();
   }
 
   render() {
@@ -161,11 +186,12 @@ export class CandleStickChart {
     S.layersMap.bodiesG.lineWidth = S.xUnit * 0.8;
     S.layersMap.bodiesR.lineWidth = S.xUnit * 0.8;
 
+    console.log(this.controls.autoScale, S.minY, S.maxY);
     if (this.controls.autoScale || S.minY === Infinity || S.maxY === -Infinity) {
       let minY = Infinity;
       let maxY = -Infinity;
 
-      for (const el of this.timeseries.view) {
+      for (const el of this.data) { // this.timeseries.view) {
         if (el.x < S.minX || el.x > S.maxX) continue;
         maxY = Math.max(maxY, el.h);
         minY = Math.min(minY, el.l);

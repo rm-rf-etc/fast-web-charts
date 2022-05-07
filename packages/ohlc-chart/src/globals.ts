@@ -8,7 +8,7 @@ export const redHexCode = '#CC6666';
 export const candleWidth = 10;
 export const candleSpacing = 1.5;
 export const candleStep = candleWidth * candleSpacing;
-export const holdingsJson = JSON.parse(document.getElementById('holdings')?.innerHTML || '');
+export const holdingsJson = JSON.parse(document.getElementById('holdings')?.innerHTML || '{}');
 
 export const controls = {
   shift: false,

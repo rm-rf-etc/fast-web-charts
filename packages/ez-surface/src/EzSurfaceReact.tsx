@@ -2,6 +2,11 @@ import React from 'react';
 import { EzSurface } from './EzSurface';
 import styled from 'styled-components';
 
+const ParentDiv = styled.div`
+  height: 100%;
+  width: 100%;
+`
+
 const Canvas = styled.canvas`
   display: block;
   width: 100%;
@@ -19,6 +24,7 @@ interface AppProps {
   onReady?: (s: EzSurface) => void;
 }
 const EzSurfaceReact: React.FC<AppProps> = ({ alpha, onReady }) => {
+  const divRef = React.useRef<HTMLDivElement | null>(null);
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
   const ezSurfaceRef = React.useRef<EzSurface | null>(null);
 
@@ -28,14 +34,22 @@ const EzSurfaceReact: React.FC<AppProps> = ({ alpha, onReady }) => {
       if (!context) {
         throw new Error('Received null context');
       }
-      ezSurfaceRef.current = new EzSurface(canvasRef.current, context);
-      if (onReady) {
-        onReady(ezSurfaceRef.current);
+      if (canvasRef.current && divRef.current) {
+        canvasRef.current.width = divRef.current.offsetWidth * devicePixelRatio;
+        canvasRef.current.height = divRef.current.offsetHeight * devicePixelRatio;
+        ezSurfaceRef.current = new EzSurface(canvasRef.current, context);
+        if (onReady) {
+          onReady(ezSurfaceRef.current);
+        }
       }
     }
   }, [canvasRef.current]);
 
-  return <Canvas ref={canvasRef} />;
+  return (
+    <ParentDiv ref={divRef}>
+      <Canvas ref={canvasRef} />
+    </ParentDiv>
+  );
 }
 
 export { EzSurfaceReact };

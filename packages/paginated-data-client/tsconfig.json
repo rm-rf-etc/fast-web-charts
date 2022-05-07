@@ -1,14 +1,12 @@
 {
   "compilerOptions": {
     "skipLibCheck": true,
-    "declaration": true,
-    "declarationMap": true,
     "sourceMap": true,
     "composite": true,
     "outDir": "dist",
     "rootDir": "src"
   },
-  "references": [
-    {"path": "../ez-surface"}
+  "files": [
+    "src/index.ts"
   ]
 }

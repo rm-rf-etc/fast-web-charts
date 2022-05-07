@@ -24,8 +24,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "yarn clean && yarn compile",
-    "compile": "tsc && cp \"./package.json\" ./dist/",
+    "build": "tsc",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

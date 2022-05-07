@@ -1,6 +1,6 @@
 // import "regenerator-runtime/runtime";
 
-class PaginatedTimeSeries {
+export class PaginatedTimeSeries {
   view = [];
   loaded = false;
   onready: CallableFunction | null = null;
@@ -20,27 +20,14 @@ class PaginatedTimeSeries {
     xR: number
   ) {
     this.worker = new Worker(dataWorkerUrl);
-    this.worker.onmessage = msg => this._dataUpdate(msg);
+    this.worker.onmessage = msg => this.onmessage(msg);
     if (keys && values) {
       this._batchInsert(keys, values);
       this._setViewRange(xL, xR);
     }
   }
 
-  _batchInsert(keys: string[], values: any[]) {
-    if (!Array.isArray(keys) || !Array.isArray(values) || keys.length !== values.length) {
-      throw new Error('batchInsert received invalid arguments');
-    }
-    this.worker.postMessage(['batch-insert', keys, values]);
-  }
-
-  _setViewRange(min: number, max: number) {
-    this.xL = min;
-    this.xR = max;
-    this.worker.postMessage(['set-range', min, max]);
-  }
-
-  _dataUpdate(msg: any) {
+  onmessage(msg: any) {
     const [action, data] = msg.data;
 
     switch(action) {
@@ -59,6 +46,19 @@ class PaginatedTimeSeries {
         return;
       }
     }
+  }
+
+  _batchInsert(keys: string[], values: any[]) {
+    if (!Array.isArray(keys) || !Array.isArray(values) || keys.length !== values.length) {
+      throw new Error('batchInsert received invalid arguments');
+    }
+    this.worker.postMessage(['batch-insert', keys, values]);
+  }
+
+  _setViewRange(min: number, max: number) {
+    this.xL = min;
+    this.xR = max;
+    this.worker.postMessage(['set-range', min, max]);
   }
 
   _updateElementsRange() {
@@ -87,5 +87,3 @@ class PaginatedTimeSeries {
   //   return [this.indexMin, this.indexMax, this.view];
   // }
 }
-
-export default PaginatedTimeSeries;

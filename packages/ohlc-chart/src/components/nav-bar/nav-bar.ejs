@@ -1,0 +1,15 @@
+<style>
+  :host {
+    box-shadow: 5px 0px 5px var(--black1);
+    border-right: 1px solid var(--border1);
+    background-color: var(--black2);
+  }
+  ::slotted(button) {
+    width: calc(100% - 10px);
+    margin: 0 5px 5px 5px;
+    padding: 5px;
+  }
+</style>
+<div>
+  <slot></slot>
+</div>
