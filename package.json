@@ -1,4 +1,5 @@
 {
   "private": true,
-  "workspaces": ["packages/*"]
+  "workspaces": ["packages/*"],
+  "nohoist": ["react-scripts", "react-scripts/**"]
 }

@@ -1,6 +1,7 @@
+import * as React from 'react';
 import './App.css';
 import { EzSurfaceReact } from 'ez-surface';
-import { candleStickChart } from './candleStickChart';
+import { candleStickChart } from './CandleStickChart';
 
 const style: React.HTMLAttributes<HTMLDivElement>['style'] = {
   position: 'absolute',
@@ -10,11 +11,18 @@ const style: React.HTMLAttributes<HTMLDivElement>['style'] = {
   left: '0',
   transform: 'translateY(-50%)',
 };
+const canvasStyle = {
+  backgroundColor: 'black',
+};
 
-export const App = () => {
+export default () => {
   return (
     <div style={style}>
-      <EzSurfaceReact onReady={candleStickChart} />
+      <EzSurfaceReact
+        canvasStyle={canvasStyle}
+        transparentBackground={false}
+        onReady={candleStickChart}
+      />
     </div>
   );
 }

@@ -23,7 +23,7 @@ class EzSurface {
   animationActive: boolean = false;
   layersList: RenderLayer[] = [];
   layersMap: Record<string, RenderLayer> = {};
-  redrawFn: CallableFunction = () => {};
+  redrawFn: CallableFunction = () => { };
   rangeY = 0;
   rangeX = 0;
   zoomY = 0;
@@ -37,8 +37,8 @@ class EzSurface {
   get yZoomUnit() { return (this.canvas.height - this.zoomY) / -this.rangeY }
   get yZoomMargin() { return this.zoomY / this.yZoomUnit }
 
-  constructor(canvas: HTMLCanvasElement, parent: HTMLElement, alpha: boolean) {
-    const context = canvas.getContext('2d', { alpha });
+  constructor(canvas: HTMLCanvasElement, parent: HTMLElement, transparentBackground: boolean) {
+    const context = canvas.getContext('2d', { alpha: transparentBackground });
     if (!context) {
       throw new Error('Failed to create 2D context for canvas');
     }

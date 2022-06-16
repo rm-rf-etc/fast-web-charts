@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { EzSurface } from './EzSurface';
 
 const defaultParentStyle = {
@@ -6,49 +6,42 @@ const defaultParentStyle = {
   width: '100%',
 };
 
-const defaultCanvasStyle = {
+const defaultCanvasStyle: React.CSSProperties = {
   display: 'block',
   width: '100%',
   height: '100%',
-  '-ms-interpolation-mode': 'nearest-neighbor',
-  'image-rendering': [
-    'optimizeSpeed',
-    '-moz-crisp-edges',
-    '-webkit-optimize-contrast',
-    'optimize-contrast',
-    'pixelated'
-  ],
+  imageRendering: 'auto',
 };
 
 interface AppProps {
-  alpha?: boolean;
+  transparentBackground?: boolean;
   onReady?: (s: EzSurface) => void;
-  parentStyle?: Record<string, string>;
-  canvasStyle?: Record<string, string>;
+  parentStyle?: React.HTMLAttributes<HTMLCanvasElement>;
+  canvasStyle?: React.HTMLAttributes<HTMLCanvasElement>;
 }
 
 const EzSurfaceReact: React.FC<AppProps> = ({
-  alpha,
+  transparentBackground,
   onReady,
-  parentStyle=defaultParentStyle,
-  canvasStyle=defaultCanvasStyle,
+  parentStyle = {},
+  canvasStyle = {},
 }) => {
-  const divRef = React.useRef<HTMLDivElement | null>(null);
-  const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
-  const ezSurfaceRef = React.useRef<EzSurface | null>(null);
+  const divRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const ezSurfaceRef = useRef<EzSurface | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!canvasRef.current || !divRef.current) return;
 
-    ezSurfaceRef.current = new EzSurface(canvasRef.current, divRef.current, alpha || false);
+    ezSurfaceRef.current = new EzSurface(canvasRef.current, divRef.current, transparentBackground || true);
     if (onReady) {
       onReady(ezSurfaceRef.current);
     }
   }, [canvasRef.current]);
 
   return (
-    <div style={parentStyle} ref={divRef}>
-      <canvas style={canvasStyle} ref={canvasRef} />
+    <div style={{ ...parentStyle, ...defaultParentStyle }} ref={divRef}>
+      <canvas style={{ ...defaultCanvasStyle, ...canvasStyle }} ref={canvasRef} />
     </div>
   );
 }

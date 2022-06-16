@@ -1,5 +1,4 @@
 import chartData from './candles.json';
-
 export const bgDark = 0x171924;
 export const greenBase16 = 0x83cc66;
 export const redBase16 = 0xcc6666;
@@ -8,7 +7,7 @@ export const redHexCode = '#CC6666';
 export const candleWidth = 10;
 export const candleSpacing = 1.5;
 export const candleStep = candleWidth * candleSpacing;
-export const holdingsJson = JSON.parse(document.getElementById('holdings')?.innerHTML || '{}');
+// export const holdingsJson = JSON.parse(document.getElementById('holdings')?.innerHTML || '{}');
 
 export const controls = {
   shift: false,

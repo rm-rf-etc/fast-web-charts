@@ -1,7 +1,10 @@
 {
- "exclude": [
-   "packages/**/tests/**",
-   "packages/**/dist/**"
+  "compilerOptions": {
+    "jsx": "react"
+  },
+  "exclude": [
+    "packages/**/tests/**",
+    "packages/**/dist/**"
   ],
   "references": [
     {"path": "./packages/ez-surface"},

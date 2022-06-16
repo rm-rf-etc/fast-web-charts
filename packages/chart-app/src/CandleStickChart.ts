@@ -11,8 +11,8 @@ import { EzSurface } from 'ez-surface';
 // import { WebSocketService } from './network/web-socket';
 
 // const pageId = (window as any).pageId || null;
-const holdingsText = document.getElementById('holdings')?.innerText;
-Object.assign(window, { holdings: JSON.parse(holdingsText || '{}') });
+// const holdingsText = document.getElementById('holdings')?.innerText;
+// Object.assign(window, { holdings: JSON.parse(holdingsText || '{}') });
 
 export function candleStickChart(surface: EzSurface) {
   const chart = new CandleStickChart(
@@ -35,28 +35,28 @@ export function candleStickChart(surface: EzSurface) {
     }
   );
 
-  Object.entries({
-    "blur": (..._args: any[]) => {
-      chart.controls.keyboardShift = false;
-      chart.controls.keyboardMeta = false;
-    },
-    "keyup": (evt: Event) => {
-      if (evt instanceof KeyboardEvent) {
-        const prop = `keyboard${evt.key}`;
-        if (chart.controls.hasOwnProperty(prop)) {
-          Object.assign(chart.controls, { [prop]: false });
-        }
+  window.addEventListener("blur", () => {
+    chart.controls.keyboardShift = false;
+    chart.controls.keyboardMeta = false;
+  });
+
+  window.addEventListener("keyup", (evt: Event) => {
+    if (evt instanceof KeyboardEvent) {
+      const prop = `keyboard${evt.key}`;
+      if (chart.controls.hasOwnProperty(prop)) {
+        Object.assign(chart.controls, { [prop]: false });
       }
-    },
-    "keydown": (evt: Event) => {
-      if (evt instanceof KeyboardEvent) {
-        const prop = `keyboard${evt.key}`;
-        if (chart.controls.hasOwnProperty(prop)) {
-          Object.assign(chart.controls, { [prop]: true });
-        }
+    }
+  });
+
+  window.addEventListener("keydown", (evt: Event) => {
+    if (evt instanceof KeyboardEvent) {
+      const prop = `keyboard${evt.key}`;
+      if (chart.controls.hasOwnProperty(prop)) {
+        Object.assign(chart.controls, { [prop]: true });
       }
-    },
-  }).forEach(([ev, fn]) => window.addEventListener(ev, fn));
+    }
+  });
 
   chart.onready();
 

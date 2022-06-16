@@ -4,6 +4,7 @@
 /**/tsconfig.tsbuildinfo
 /**/node_modules
 /**/dist
+/**/cache
 /.pnp
 .pnp.js
 

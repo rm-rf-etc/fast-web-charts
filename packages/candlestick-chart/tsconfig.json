@@ -9,6 +9,7 @@
     "rootDir": "src"
   },
   "references": [
-    {"path": "../ez-surface"}
+    {"path": "../ez-surface"},
+    {"path": "../paginated-data-client"},
   ]
 }
