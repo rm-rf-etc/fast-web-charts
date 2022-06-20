@@ -1,0 +1,29 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2022", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@fwc/fwc-candlesticks": [
+        "libs/fwc-candlesticks/src/index.ts"
+      ],
+      "@fwc/paginated-data-client": [
+        "libs/paginated-data-client/src/index.ts"
+      ],
+      "@fwc/fwc-canvas": ["libs/fwc-canvas/src/index.ts"],
+      "@fwc/fwc-canvas-react": ["libs/fwc-canvas-react/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

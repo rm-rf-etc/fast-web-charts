@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json",
+  "version": 2,
+  "projects": {
+    "chart-demo": "apps/chart-demo",
+    "chart-demo-e2e": "apps/chart-demo-e2e",
+    "fwc-canvas": "libs/fwc-canvas",
+    "fwc-canvas-react": "libs/fwc-canvas-react",
+    "fwc-candlesticks": "libs/fwc-candlesticks",
+    "paginated-data-client": "libs/paginated-data-client"
+  }
+}
