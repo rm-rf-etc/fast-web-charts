@@ -1,6 +1,5 @@
 {
   "extends": "./tsconfig.json",
-  "composite": true,
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "types": ["node"]
@@ -20,6 +19,5 @@
     "**/*.spec.jsx",
     "**/*.test.jsx"
   ],
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
-  "resolveJsonModule": true
+  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
 }

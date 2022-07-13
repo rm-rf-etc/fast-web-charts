@@ -92,14 +92,12 @@ class FwcCanvas {
   }
 
   setMinMaxX(minX: number, maxX: number) {
-    // console.log('setMinMaxX', minX, maxX);
     this.minX = minX;
     this.maxX = maxX;
     this.rangeX = this.maxX - this.minX;
   }
 
   setMinMaxY(minY: number, maxY: number) {
-    // console.log('setMinMaxY', minY, maxY);
     this.minY = minY;
     this.maxY = maxY;
     this.rangeY = this.maxY - this.minY;
@@ -116,7 +114,7 @@ class FwcCanvas {
   }
 
   getViewTransformValues() {
-    if (!this.maxY || !this.minX) {
+    if (typeof this.maxY !== 'number' || typeof this.minX !== 'number') {
       return null;
     }
     const yZoomUnit = this.yZoomUnit;

@@ -4,9 +4,11 @@
   "projects": {
     "chart-demo": "apps/chart-demo",
     "chart-demo-e2e": "apps/chart-demo-e2e",
+    "stratfolio": "apps/stratfolio",
+    "stratfolio-e2e": "apps/stratfolio-e2e",
+    "fwc-candlesticks": "libs/fwc-candlesticks",
     "fwc-canvas": "libs/fwc-canvas",
     "fwc-canvas-react": "libs/fwc-canvas-react",
-    "fwc-candlesticks": "libs/fwc-candlesticks",
     "paginated-data-client": "libs/paginated-data-client"
   }
 }

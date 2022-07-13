@@ -10,15 +10,16 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "resolveJsonModule": true
+    "noFallthroughCasesInSwitch": true
   },
   "files": [],
-  "include": [
-    "./src/app/*"
-  ],
+  "include": [],
   "references": [
-    {"path": "./tsconfig.app.json"},
-    {"path": "./tsconfig.spec.json"}
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
   ]
 }

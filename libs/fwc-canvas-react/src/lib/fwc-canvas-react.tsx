@@ -20,6 +20,7 @@ interface AppProps {
   canvasStyle?: React.CSSProperties;
 }
 
+let count = 0
 const FwcCanvasReact: React.FC<AppProps> = ({
   transparentBackground,
   onReady,
@@ -28,16 +29,20 @@ const FwcCanvasReact: React.FC<AppProps> = ({
 }) => {
   const divRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const FwcCanvasRef = useRef<FwcCanvas | null>(null);
 
   useEffect(() => {
-    if (!canvasRef.current || !divRef.current) return;
+    if (!canvasRef.current || !divRef.current) return
 
-    FwcCanvasRef.current = new FwcCanvas(canvasRef.current, divRef.current, transparentBackground || true);
-    if (onReady) {
-      onReady(FwcCanvasRef.current);
+    if (onReady && count++ < 1) {
+      onReady(
+        new FwcCanvas(
+          canvasRef.current,
+          divRef.current,
+          transparentBackground || true
+        )
+      )
     }
-  }, [canvasRef.current]);
+  }, []);
 
   return (
     <div style={{ ...parentStyle, ...defaultParentStyle }} ref={divRef}>
