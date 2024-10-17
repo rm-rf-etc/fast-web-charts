@@ -45,6 +45,11 @@ export class RenderLayer {
     return this;
   }
 
+  newRect([x1, y1]: Point, [x2, y2]: Point) {
+    this._path.rect(x1, y1, x2 - x1, y2 - y1);
+    return this;
+  }
+
   // newCircle(key, ...args) {
   //   const circle = new Circle(...args);
   //   this._map.set(key, circle);

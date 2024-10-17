@@ -14,9 +14,9 @@ import { FwcCandlesticksChart } from '@fwc/fwc-candlesticks';
 // const holdingsText = document.getElementById('holdings')?.innerText;
 // Object.assign(window, { holdings: JSON.parse(holdingsText || '{}') });
 
-export function candleStickChart(fwcCanvas: FwcCanvas) {
+export function candleStickChart(canvas: FwcCanvas) {
   const chart = new FwcCandlesticksChart(
-    fwcCanvas,
+    canvas,
     chartData,
     {
       bearish: "rgb(232,59,63)",

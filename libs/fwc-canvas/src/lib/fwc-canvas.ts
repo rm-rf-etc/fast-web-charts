@@ -16,6 +16,7 @@ export type ChangeProps = Partial<{
 }>
 
 class FwcCanvas {
+  parent: HTMLElement;
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
 
@@ -46,18 +47,16 @@ class FwcCanvas {
     this.context = context;
     this.canvas = canvas;
     this.context.scale(devicePixelRatio, devicePixelRatio);
+    this.parent = parent
 
+    this.onResize();
+    window.addEventListener('resize', () => this.onResize());
+  }
+
+  onResize() {
     this.update({
-      width: parent.offsetWidth * devicePixelRatio,
-      height: parent.offsetHeight * devicePixelRatio,
-    });
-
-    const self = this;
-    window.addEventListener('resize', () => {
-      self.update({
-        width: parent.offsetWidth * devicePixelRatio,
-        height: parent.offsetHeight * devicePixelRatio,
-      });
+      width: this.parent.offsetWidth * devicePixelRatio,
+      height: this.parent.offsetHeight * devicePixelRatio,
     });
   }
 
@@ -159,6 +158,7 @@ class FwcCanvas {
     if (layer.strokeStyle) this.context.strokeStyle = layer.strokeStyle;
     if (layer.blendMode) this.context.globalCompositeOperation = layer.blendMode;
     this.context.stroke(path);
+    if (layer.fillStyle) this.context.fill(path);
   }
 
   render() {
